@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Sets which app data will be backed up on Android 11 (API level 30) and below.
+   Currently the default (back everything up). Once Phase 5 encryption lands,
+   revisit this — an encrypted DB is safe to auto-backup, but consider whether
+   any transient/unlock-session state should be excluded.
+   https://developer.android.com/guide/topics/data/autobackup
+-->
+<full-backup-content>
+</full-backup-content>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Sets which app data will be backed up (cloud) and transferred (device-to-device)
+   on Android 12 (API level 31) and above. Currently the default (include everything).
+   Same note as backup_rules.xml — revisit alongside Phase 5 encryption.
+   https://developer.android.com/about/versions/12/backup-restore
+-->
+<data-extraction-rules>
+    <cloud-backup>
+    </cloud-backup>
+    <device-transfer>
+    </device-transfer>
+</data-extraction-rules>

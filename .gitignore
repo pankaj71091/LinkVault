@@ -1,0 +1,24 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration file (contains SDK path, per-machine, never share)
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+.DS_Store
+
+# Android
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Room schema history — DO commit this (see app/schemas). Only excluding
+# accidental duplicate/scratch exports here, not the real schema folder.
+
+# LinkVault specific
+.artifacts/
+*.zip

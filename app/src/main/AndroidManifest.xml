@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Phase 3: fetching a page's <title> and favicon after a bookmark is
+      saved (data/remote/PageMetadataFetcher.kt) needs INTERNET.
+      ACCESS_NETWORK_STATE is what lets WorkManager's "only run when
+      connected" constraint actually check connectivity, rather than firing
+      the fetch even with no network and just failing.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".LinkVaultApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LinkVault">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.LinkVault">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          Registered for two intent types (see LinkCaptureActivity):
+          sharing (ACTION_SEND) and being picked as a link handler
+          (ACTION_VIEW, browsable) — the latter is what makes LinkVault show
+          up in things like LinkSheet's chooser or Android's default-browser
+          list. A separate Activity from MainActivity, styled as a floating
+          dialog, so capturing a link saves it and hands control straight
+          back rather than switching away to the full app.
+        -->
+        <activity
+            android:name=".LinkCaptureActivity"
+            android:exported="true"
+            android:theme="@style/Theme.LinkVault.Dialog"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

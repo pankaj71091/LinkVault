@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bookmark-ribbon glyph, centered in the adaptive icon safe zone. Plain
+     white against the deep navy background (colors.xml) deliberately —
+     icons get viewed small, and white-on-navy holds much stronger contrast
+     than a tinted ribbon would, across every wallpaper it could sit on. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,32 L70,32 L70,64 L54,76 L38,64 Z" />
+</vector>
+

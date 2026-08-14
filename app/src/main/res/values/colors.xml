@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches the dark-theme surface color in ui/theme/Color.kt (SurfaceDark)
+         exactly, so the launcher icon and the app's own dark theme read as
+         one considered identity rather than two coincidentally-similar darks. -->
+    <color name="ic_launcher_background">#131218</color>
+</resources>
+
