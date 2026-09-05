@@ -14,7 +14,7 @@ android {
         minSdk = 26
         targetSdk = 37
         versionCode = 1
-        versionName = "0.7.0" // Phase 0-4 + 4.5 batches 1&2 (tags, archive, pin, notes, sort, search, duplicate detection, auto-suggest folder, custom folder colors) — schema v2, no new migration this batch
+        versionName = "0.1" // Initial Public Release
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

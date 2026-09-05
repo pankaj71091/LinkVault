@@ -1,0 +1,15 @@
+{
+  "formatVersion": 1,
+  "exportedAt": 1700000000000,
+  "folders": [
+    { "id": 10, "name": "Recipes", "parentFolderId": null, "createdAt": 1700000000000, "updatedAt": 1700000000000, "sortOrder": 0, "colorTag": null },
+    { "id": 11, "name": "Sub-recipes", "parentFolderId": 10, "createdAt": 1700000000000, "updatedAt": 1700000000000, "sortOrder": 0, "colorTag": null },
+    { "id": 12, "name": "Read Later", "parentFolderId": null, "createdAt": 1700000000000, "updatedAt": 1700000000000, "sortOrder": 0, "colorTag": null }
+  ],
+  "bookmarks": [
+    { "id": 100, "url": "https://example.com/pasta", "title": "Best Pasta", "folderId": 11, "notes": "tasty", "createdAt": 1700000000000, "updatedAt": 1700000000000, "faviconUrl": null, "previewImageUrl": null, "isArchived": false, "isPinned": true },
+    { "id": 101, "url": "https://example.com/soup", "title": "Soup of the day", "folderId": 10, "notes": null, "createdAt": 1700000000000, "updatedAt": 1700000000000, "faviconUrl": null, "previewImageUrl": null, "isArchived": false, "isPinned": false },
+    { "id": 102, "url": "https://news.example.com/article", "title": null, "folderId": 12, "notes": null, "createdAt": 1700000000000, "updatedAt": 1700000000000, "faviconUrl": null, "previewImageUrl": null, "isArchived": true, "isPinned": false },
+    { "id": 103, "url": "https://example.com/unsorted", "title": "Loose bookmark", "folderId": null, "notes": null, "createdAt": 1700000000000, "updatedAt": 1700000000000, "faviconUrl": null, "previewImageUrl": null, "isArchived": false, "isPinned": false }
+  ]
+}

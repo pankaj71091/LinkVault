@@ -55,7 +55,7 @@ data class ExportedBookmark(
 class BackupRepository(
     private val folderDao: FolderDao,
     private val bookmarkDao: BookmarkDao,
-    private val preferenceRepository: PreferenceRepository
+    private val preferenceRepository: BackupPreferences
 ) {
     // ignoreUnknownKeys so a *newer* export file (e.g. one with Phase 4.5's
     // tags added later) can still be read by older parsing logic without
@@ -122,7 +122,16 @@ class BackupRepository(
             val newId = existingId ?: folderDao.insert(
                 Folder(
                     name = folder.name,
-                    parentFolderId = folder.parentFolderId, // Now supports nesting
+                    // BUGFIX: was `folder.parentFolderId`, which used the
+                    // pre-import id and would dangle. Remap it to the new
+                    // id (or null for root-level folders). If the parent
+                    // hasn't been seen yet in the remap (e.g. file lists
+                    // children before parents), it stays null and a later
+                    // pass — the bookmark insertion — can still see it via
+                    // folderIdRemap; but for the folder's own parent FK,
+                    // we accept the null in the rare out-of-order case
+                    // rather than a dangling id.
+                    parentFolderId = folder.parentFolderId?.let { folderIdRemap[it] },
                     createdAt = folder.createdAt,
                     updatedAt = folder.updatedAt,
                     sortOrder = folder.sortOrder,
