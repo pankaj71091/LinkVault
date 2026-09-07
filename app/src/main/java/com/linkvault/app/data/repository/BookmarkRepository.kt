@@ -36,12 +36,28 @@ class BookmarkRepository(private val bookmarkDao: BookmarkDao) {
     suspend fun updateNotes(bookmark: Bookmark, notes: String?) =
         bookmarkDao.update(bookmark.copy(notes = notes?.trim()?.takeIf { it.isNotBlank() }, updatedAt = System.currentTimeMillis()))
 
-    /** Used by the Phase 1 capture flow — the only place a brand-new Bookmark gets created. */
-    suspend fun saveNewBookmark(url: String, title: String?, folderId: Long?): Long =
-        bookmarkDao.insert(Bookmark(url = url, title = title, folderId = folderId))
+    /**
+     * Used by the Phase 1 capture flow — the only place a brand-new
+     * Bookmark gets created. The URL is normalized via [UrlNormalizer]
+     * before storage so duplicates with cosmetic differences (case,
+     * trailing slash, www prefix, tracking params) collapse to the same
+     * row.
+     */
+    suspend fun saveNewBookmark(url: String, title: String?, folderId: Long?): Long {
+        val normalized = UrlNormalizer.normalize(url)
+        return bookmarkDao.insert(Bookmark(url = normalized, title = title, folderId = folderId))
+    }
 
-    /** Exact match only — a warning, not a hard block, so this stays a simple yes/no rather than fuzzy matching. */
-    suspend fun findExistingBookmark(url: String): Bookmark? = bookmarkDao.findByExactUrl(url)
+    /**
+     * Exact match only — a warning, not a hard block, so this stays a
+     * simple yes/no rather than fuzzy matching. The URL is normalized
+     * before lookup so e.g. "HTTPS://Example.com/" and
+     * "https://example.com?utm_source=x" both find the same row.
+     */
+    suspend fun findExistingBookmark(url: String): Bookmark? {
+        val normalized = UrlNormalizer.normalize(url)
+        return bookmarkDao.findByExactUrl(normalized)
+    }
 
     /**
      * Looks at previously-saved bookmarks from the same domain and suggests
