@@ -8,8 +8,7 @@ import java.nio.charset.Charset
 
 data class PageMetadata(
     val title: String?,
-    val faviconUrl: String?,
-    val previewImageUrl: String? = null
+    val faviconUrl: String?
 )
 
 /**
@@ -77,8 +76,7 @@ object PageMetadataFetcher {
             if (title == null && faviconUrl == null) return null
             return PageMetadata(
                 title = title,
-                faviconUrl = faviconUrl,
-                previewImageUrl = null // Disabled for performance
+                faviconUrl = faviconUrl
             )
         } finally {
             connection.disconnect()

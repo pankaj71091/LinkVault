@@ -84,7 +84,6 @@ class BackupRepositoryTest {
         createdAt = 1700000000000L,
         updatedAt = 1700000000000L,
         faviconUrl = null,
-        previewImageUrl = null,
         isArchived = isArchived,
         isPinned = isPinned
     )

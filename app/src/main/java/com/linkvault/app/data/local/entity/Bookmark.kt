@@ -54,9 +54,6 @@ data class Bookmark(
     /** Favicon URL or local cached path. Populated starting Phase 3. */
     val faviconUrl: String? = null,
 
-    /** Large preview image URL (og:image). Added Phase 5 Stage 1. */
-    val previewImageUrl: String? = null,
-
     /** Soft-archive flag (Phase 4.5) — kept separate from deletion. */
     val isArchived: Boolean = false,
 

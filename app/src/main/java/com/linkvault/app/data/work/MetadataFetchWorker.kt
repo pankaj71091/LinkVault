@@ -42,8 +42,7 @@ class MetadataFetchWorker(
         bookmarkRepository.applyFetchedMetadata(
             bookmarkId = bookmarkId,
             fetchedTitle = metadata.title,
-            fetchedFaviconUrl = metadata.faviconUrl,
-            fetchedPreviewImageUrl = metadata.previewImageUrl
+            fetchedFaviconUrl = metadata.faviconUrl
         )
 
         return Result.success()

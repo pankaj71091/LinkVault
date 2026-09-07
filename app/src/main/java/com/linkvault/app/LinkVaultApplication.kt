@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.linkvault.app.data.local.AppDatabase
 import com.linkvault.app.data.local.MIGRATION_1_2
 import com.linkvault.app.data.local.MIGRATION_2_3
+import com.linkvault.app.data.local.MIGRATION_3_4
 import com.linkvault.app.data.repository.BackupRepository
 import com.linkvault.app.data.repository.BookmarkRepository
 import com.linkvault.app.data.repository.FolderRepository
@@ -26,7 +27,7 @@ class LinkVaultApplication : Application() {
             AppDatabase::class.java,
             AppDatabase.DATABASE_NAME
         )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
     }
 

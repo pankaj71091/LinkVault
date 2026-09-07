@@ -89,30 +89,24 @@ class BookmarkRepository(private val bookmarkDao: BookmarkDao) {
      * Applied by MetadataFetchWorker once a background fetch finds a title
      * and/or favicon for a bookmark. [fetchedTitle] only fills in a
      * currently-blank title — it never overwrites one the user already had
-     * (e.g. from a share's EXTRA_SUBJECT). [fetchedFaviconUrl] and
-     * [fetchedPreviewImageUrl] apply if non-null.
+     * (e.g. from a share's EXTRA_SUBJECT). [fetchedFaviconUrl] applies
+     * if non-null.
      */
     suspend fun applyFetchedMetadata(
         bookmarkId: Long,
         fetchedTitle: String?,
-        fetchedFaviconUrl: String?,
-        fetchedPreviewImageUrl: String? = null
+        fetchedFaviconUrl: String?
     ) {
         val current = bookmarkDao.getBookmarkById(bookmarkId) ?: return
         val newTitle = current.title?.takeIf { it.isNotBlank() } ?: fetchedTitle
         val newFavicon = fetchedFaviconUrl ?: current.faviconUrl
-        val newPreview = fetchedPreviewImageUrl ?: current.previewImageUrl
 
-        if (newTitle == current.title &&
-            newFavicon == current.faviconUrl &&
-            newPreview == current.previewImageUrl
-        ) return
+        if (newTitle == current.title && newFavicon == current.faviconUrl) return
 
         bookmarkDao.update(
             current.copy(
                 title = newTitle,
                 faviconUrl = newFavicon,
-                previewImageUrl = newPreview,
                 updatedAt = System.currentTimeMillis()
             )
         )

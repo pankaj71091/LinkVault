@@ -25,7 +25,7 @@ data class ImportResult(val foldersImported: Int, val bookmarksImported: Int)
  */
 @Serializable
 data class ExportFile(
-    val formatVersion: Int = 1,
+    val formatVersion: Int = 2,
     val exportedAt: Long,
     val folders: List<ExportedFolder>,
     val bookmarks: List<ExportedBookmark>
@@ -52,7 +52,6 @@ data class ExportedBookmark(
     val createdAt: Long,
     val updatedAt: Long,
     val faviconUrl: String?,
-    val previewImageUrl: String? = null,
     val isArchived: Boolean,
     val isPinned: Boolean
 )
@@ -123,7 +122,6 @@ class BackupRepository(
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
                 faviconUrl = it.faviconUrl,
-                previewImageUrl = it.previewImageUrl,
                 isArchived = it.isArchived,
                 isPinned = it.isPinned
             )
@@ -194,7 +192,6 @@ class BackupRepository(
                         createdAt = bookmark.createdAt,
                         updatedAt = bookmark.updatedAt,
                         faviconUrl = bookmark.faviconUrl,
-                        previewImageUrl = bookmark.previewImageUrl,
                         isArchived = bookmark.isArchived,
                         isPinned = bookmark.isPinned
                     )

@@ -17,8 +17,13 @@ import com.linkvault.app.data.repository.BackupDatabase
  * data source, no sync backend (see Phase 4 for portable import/export, and
  * Phase 5 for at-rest encryption).
  *
- * version 3 (Phase 5): added previewImageUrl to Bookmark. See
- * Migrations.kt (MIGRATION_2_3).
+ * Version history:
+ *  - v1: initial schema.
+ *  - v2 (Phase 4.5): added tags + bookmark_tag_cross_ref (MIGRATION_1_2).
+ *  - v3 (Phase 5): added previewImageUrl to Bookmark (MIGRATION_2_3).
+ *  - v4: dropped previewImageUrl — the feature was never wired up to the
+ *    UI and the fetcher always returned null, so the column was carrying
+ *    dead weight. MIGRATION_3_4 rebuilds the bookmarks table without it.
  *
  * Implements [BackupDatabase] so the destructive REPLACE-mode import
  * path can be wrapped in a single transaction (see BackupRepository
@@ -28,7 +33,7 @@ import com.linkvault.app.data.repository.BackupDatabase
  */
 @Database(
     entities = [Folder::class, Bookmark::class, Tag::class, BookmarkTagCrossRef::class],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase(), BackupDatabase {
