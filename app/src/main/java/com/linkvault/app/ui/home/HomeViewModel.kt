@@ -55,11 +55,17 @@ class HomeViewModel(
     }
 
     private fun checkBackupReminder() {
-        val lastBackup = preferenceRepository.getLastBackupTime()
-        // Remind every 7 days if no backup was made
-        val threshold = 7L * 24 * 60 * 60 * 1000
-        if (System.currentTimeMillis() - lastBackup > threshold) {
-            _showBackupReminder.value = true
+        // Since the DataStore migration (Task 5), `getLastBackupTime()`
+        // is a suspend function — launching in viewModelScope rather than
+        // calling it synchronously from init also avoids the SharedPreferences
+        // first-read main-thread stall that this method used to do.
+        viewModelScope.launch {
+            val lastBackup = preferenceRepository.getLastBackupTime()
+            // Remind every 7 days if no backup was made
+            val threshold = 7L * 24 * 60 * 60 * 1000
+            if (System.currentTimeMillis() - lastBackup > threshold) {
+                _showBackupReminder.value = true
+            }
         }
     }
 
