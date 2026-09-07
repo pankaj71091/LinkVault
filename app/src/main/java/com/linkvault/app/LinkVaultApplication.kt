@@ -34,7 +34,11 @@ class LinkVaultApplication : Application() {
     val bookmarkRepository: BookmarkRepository by lazy { BookmarkRepository(database.bookmarkDao()) }
     val preferenceRepository: PreferenceRepository by lazy { PreferenceRepository(applicationContext) }
     val backupRepository: BackupRepository by lazy {
-        BackupRepository(database.folderDao(), database.bookmarkDao(), preferenceRepository)
+        // Pass the database itself, not the individual DAOs, so
+        // REPLACE-mode import can run inside a single Room transaction
+        // (see BackupRepository.wipeAll / importFromJson for the
+        // ordering constraints that make this matter).
+        BackupRepository(database, preferenceRepository)
     }
     val tagRepository: TagRepository by lazy { TagRepository(database.tagDao()) }
     val metadataFetchScheduler: MetadataFetchScheduler by lazy { MetadataFetchScheduler(applicationContext) }

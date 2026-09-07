@@ -1,9 +1,10 @@
 package com.linkvault.app.data.repository
 
+import com.linkvault.app.data.local.dao.BookmarkDao
 import com.linkvault.app.data.local.entity.Bookmark
 import com.linkvault.app.data.local.entity.Folder
-import com.linkvault.app.testutil.FakeBookmarkDao
-import com.linkvault.app.testutil.FakeFolderDao
+import com.linkvault.app.data.local.entity.Tag
+import com.linkvault.app.testutil.FakeBackupDatabase
 import com.linkvault.app.testutil.FakePreferenceRepository
 import com.linkvault.app.testutil.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,16 +16,18 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 /**
- * Unit tests for [BackupRepository]. Uses in-memory fakes for the two
- * DAOs (real Room would need an Android Context, which is unavailable
- * in `src/test/`) and focuses on the repository's logic: REPLACE/MERGE
- * semantics, folder-ID remapping, JSON round-trip, the `lastBackupTime`
- * side-effect, and the HTML import path.
+ * Unit tests for [BackupRepository]. Uses [FakeBackupDatabase] — a
+ * transactional in-memory fake — plus [FakePreferenceRepository], and
+ * focuses on the repository's logic: REPLACE/MERGE semantics, folder-ID
+ * remapping, JSON round-trip, the `lastBackupTime` side-effect, the
+ * HTML import path, the transactional rollback guarantee, and the
+ * tag-table cleanup on REPLACE.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class BackupRepositoryTest {
@@ -32,23 +35,26 @@ class BackupRepositoryTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var folderDao: FakeFolderDao
-    private lateinit var bookmarkDao: FakeBookmarkDao
+    private lateinit var database: FakeBackupDatabase
     private lateinit var preferences: FakePreferenceRepository
     private lateinit var repository: BackupRepository
 
+    // Convenience accessors — tests read/write through these so the
+    // bodies stay focused on assertions rather than on `.bookmarks.foo`.
+    private val folderDao get() = database.folders
+    private val bookmarkDao get() = database.bookmarks
+    private val tagDao get() = database.tags
+
     @Before
     fun setUp() {
-        folderDao = FakeFolderDao()
-        bookmarkDao = FakeBookmarkDao()
+        database = FakeBackupDatabase()
         preferences = FakePreferenceRepository()
-        repository = BackupRepository(folderDao, bookmarkDao, preferences)
+        repository = BackupRepository(database, preferences)
     }
 
     @After
     fun tearDown() {
-        folderDao.clear()
-        bookmarkDao.clear()
+        database.clear()
     }
 
     private fun loadFixture(): String =
@@ -139,42 +145,59 @@ class BackupRepositoryTest {
         assertEquals(4, bookmarkDao.getAllBookmarksOnce().size)
     }
 
-    // --- 1.4: tag cleanup on REPLACE is currently incomplete (known gap) ---
+    // --- 1.4: REPLACE now also wipes orphan tags (Task 4 fix) ---
 
     @Test
-    fun `1_4 importFromJson REPLACE cleans bookmarks and folders (tag-table cleanup is a known gap)`() = runTest {
-        // This test documents the current behavior. When Task 4 wraps importFromJson
-        // in a transaction and adds tag-table cleanup, this test will still pass —
-        // the bookmark + folder wipe is what we lock down here.
+    fun `1_4 importFromJson REPLACE wipes orphan tags too`() = runTest {
+        tagDao.insert(Tag(name = "orphan-tag"))
+        assertEquals(1, tagDao.snapshotState().tags.size)
+
         repository.importFromJson(loadFixture(), ImportMode.REPLACE)
-        assertEquals(4, bookmarkDao.getAllBookmarksOnce().size)
-        assertEquals(3, folderDao.getAllFoldersOnce().size)
+
+        assertEquals(0, tagDao.snapshotState().tags.size)
     }
 
-    // --- 1.5 + 1.6: MERGE dedupes root folders by case-insensitive name ---
+    // --- 1.5: REPLACE wipes deeply-nested folders (the SET_NULL loop) ---
 
     @Test
-    fun `1_5 importFromJson MERGE dedupes root folders by case-insensitive name`() = runTest {
-        folderDao.insert(testFolder(name = "RECIPES")) // pre-existing, different casing
+    fun `1_5 importFromJson REPLACE wipes deeply-nested folders`() = runTest {
+        val rootId = folderDao.insert(testFolder(name = "L0"))
+        val midId = folderDao.insert(testFolder(name = "L1", parentFolderId = rootId))
+        folderDao.insert(testFolder(name = "L2", parentFolderId = midId))
+        assertEquals(3, folderDao.getAllFoldersOnce().size)
+
+        val json = """{
+            "formatVersion": 1,
+            "exportedAt": 1,
+            "folders": [{ "id": 99, "name": "Only", "parentFolderId": null, "createdAt": 1, "updatedAt": 1, "sortOrder": 0, "colorTag": null }],
+            "bookmarks": []
+        }""".trimIndent()
+        repository.importFromJson(json, ImportMode.REPLACE)
+
+        val remaining = folderDao.getAllFoldersOnce()
+        assertEquals(1, remaining.size)
+        assertEquals("Only", remaining.first().name)
+    }
+
+    // --- 1.6: MERGE dedupes root folders by case-insensitive name ---
+
+    @Test
+    fun `1_6 importFromJson MERGE dedupes root folders by case-insensitive name`() = runTest {
+        folderDao.insert(testFolder(name = "RECIPES"))
 
         val result = repository.importFromJson(loadFixture(), ImportMode.MERGE)
 
-        // Should NOT have created a second "Recipes" — the existing "RECIPES" is reused
         val recipes = folderDao.getAllFoldersOnce().filter { it.name.equals("recipes", ignoreCase = true) }
         assertEquals(1, recipes.size)
-        // The import result reports the count from the file, not the count actually inserted.
         assertEquals(3, result.foldersImported)
     }
 
     // --- 1.7: MERGE remaps folder IDs so bookmarks point to the right folder ---
 
     @Test
-    fun `1_6 importFromJson MERGE remaps folder IDs so bookmarks point to the right folder`() = runTest {
+    fun `1_7 importFromJson MERGE remaps folder IDs so bookmarks point to the right folder`() = runTest {
         repository.importFromJson(loadFixture(), ImportMode.MERGE)
 
-        // The "pasta" bookmark was in folder id 11 in the fixture. After import, the
-        // actual id will be different — find the bookmark in the new DB and check it
-        // points to a folder whose name is "Sub-recipes".
         val pasta = bookmarkDao.getAllBookmarksOnce().first { it.url == "https://example.com/pasta" }
         assertNotNull(pasta.folderId)
         val folder = folderDao.getFolderById(pasta.folderId!!)
@@ -185,7 +208,7 @@ class BackupRepositoryTest {
     // --- 1.8: MERGE preserves child folder nesting via remap ---
 
     @Test
-    fun `1_7 importFromJson MERGE preserves child folder nesting via remap`() = runTest {
+    fun `1_8 importFromJson MERGE preserves child folder nesting via remap`() = runTest {
         repository.importFromJson(loadFixture(), ImportMode.MERGE)
 
         val subRecipes = folderDao.getAllFoldersOnce().first { it.name == "Sub-recipes" }
@@ -198,7 +221,7 @@ class BackupRepositoryTest {
     // --- 1.9: unknown top-level JSON fields are tolerated ---
 
     @Test
-    fun `1_8 importFromJson with an unknown top-level field still works (ignoreUnknownKeys)`() = runTest {
+    fun `1_9 importFromJson with an unknown top-level field still works (ignoreUnknownKeys)`() = runTest {
         val extendedJson = loadFixture().replaceFirst("{", """{ "futureFeatureFlag": true,""")
         repository.importFromJson(extendedJson, ImportMode.REPLACE)
         assertEquals(3, folderDao.getAllFoldersOnce().size)
@@ -207,7 +230,7 @@ class BackupRepositoryTest {
     // --- 1.10: HTML import end-to-end ---
 
     @Test
-    fun `1_9 importFromHtml parses a Chrome-style Netscape export`() = runTest {
+    fun `1_10 importFromHtml parses a Chrome-style Netscape export`() = runTest {
         val html = """
             <!DOCTYPE NETSCAPE-Bookmark-file-1>
             <HTML><BODY>
@@ -237,7 +260,7 @@ class BackupRepositoryTest {
     // --- 1.11: HTML import recreates nested folder path ---
 
     @Test
-    fun `1_10 importFromHtml recreates nested folder path`() = runTest {
+    fun `1_11 importFromHtml recreates nested folder path`() = runTest {
         val html = """
             <!DOCTYPE NETSCAPE-Bookmark-file-1>
             <HTML><BODY>
@@ -267,10 +290,52 @@ class BackupRepositoryTest {
     // --- 1.12: exportToJson updates lastBackupTime ---
 
     @Test
-    fun `1_11 exportToJson updates lastBackupTime in preferences`() = runTest {
+    fun `1_12 exportToJson updates lastBackupTime in preferences`() = runTest {
         assertEquals(0L, preferences.storedLastBackupTime)
         repository.exportToJson()
         val after = preferences.storedLastBackupTime
         assertTrue("lastBackupTime should be set after export", after > 0L)
+    }
+
+    // --- 1.13 (Task 4): import is atomic — a mid-import failure rolls back ---
+
+    @Test
+    fun `1_13 importFromJson rolls back all changes when the block throws mid-import`() = runTest {
+        // Pre-seed: a folder, a bookmark, and a tag we expect to be UNTOUCHED
+        // after the import fails partway through.
+        folderDao.insert(testFolder(name = "Pre-existing"))
+        bookmarkDao.insert(testBookmark(url = "https://keep.me"))
+        val preTag = Tag(name = "keep-tag")
+        val preTagId = tagDao.insert(preTag)
+        assertEquals(1, folderDao.getAllFoldersOnce().size)
+        assertEquals(1, bookmarkDao.getAllBookmarksOnce().size)
+        assertEquals(1, tagDao.snapshotState().tags.size)
+
+        // Configure the bookmark DAO to throw on its 2nd insert (the fixture
+        // has 4 bookmarks; index 1 is the 2nd one — by then REPLACE has wiped
+        // the pre-existing rows and inserted 1 folder, so the throw lands
+        // mid-import). This simulates a real mid-import crash.
+        bookmarkDao.failOnInsertIndex = 1
+
+        try {
+            repository.importFromJson(loadFixture(), ImportMode.REPLACE)
+            fail("Expected the failing bookmark DAO to throw")
+        } catch (e: IllegalStateException) {
+            // Expected — the test hook throws this
+        }
+
+        // The repository should have rolled back: pre-existing data intact,
+        // no rows from the file leaked through.
+        val foldersAfter = folderDao.getAllFoldersOnce()
+        val bookmarksAfter = bookmarkDao.getAllBookmarksOnce()
+        val tagsAfter = tagDao.snapshotState().tags
+
+        assertEquals(1, foldersAfter.size)
+        assertEquals("Pre-existing", foldersAfter.first().name)
+        assertEquals(1, bookmarksAfter.size)
+        assertEquals("https://keep.me", bookmarksAfter.first().url)
+        assertEquals(1, tagsAfter.size)
+        assertEquals(preTagId, tagsAfter.first().id)
+        assertTrue(bookmarksAfter.none { it.url == "https://example.com/pasta" })
     }
 }

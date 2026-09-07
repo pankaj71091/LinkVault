@@ -26,11 +26,46 @@ class FakeBookmarkDao : BookmarkDao {
         bookmarksById.clear()
         nextId = 1L
         bookmarksState.value = emptyList()
+        insertCount = 0
+        failOnInsertIndex = null
     }
+
+    fun snapshotState(): BookmarkSnapshot = BookmarkSnapshot(
+        bookmarks = bookmarks.toList(),
+        bookmarksById = bookmarksById.toMap(),
+        nextId = nextId
+    )
+
+    fun restore(snap: BookmarkSnapshot) {
+        bookmarks.clear()
+        bookmarks.addAll(snap.bookmarks)
+        bookmarksById.clear()
+        bookmarksById.putAll(snap.bookmarksById)
+        nextId = snap.nextId
+        bookmarksState.value = bookmarks.toList()
+    }
+
+    /**
+     * Test hook: when set to a non-null value, the next call to [insert]
+     * with that zero-based index (across the lifetime of this fake) will
+     * throw the configured [nextInsertException]. Used to simulate a
+     * mid-import crash for the rollback test. Counter resets with [clear].
+     */
+    var failOnInsertIndex: Int? = null
+    var nextInsertException: Throwable = IllegalStateException("simulated mid-import failure")
+    private var insertCount = 0
+
+    /** Test hook: reset the insert counter (called automatically by [clear]). */
+    private fun resetInsertCount() { insertCount = 0 }
 
     // --- Methods used by BackupRepository ---
 
     override suspend fun insert(bookmark: Bookmark): Long {
+        val current = insertCount++
+        val failAt = failOnInsertIndex
+        if (failAt != null && current == failAt) {
+            throw nextInsertException
+        }
         val newId = nextId++
         val stored = bookmark.copy(id = newId)
         bookmarks.add(stored)
@@ -110,3 +145,9 @@ class FakeBookmarkDao : BookmarkDao {
         bookmarksState.value = snapshot()
     }
 }
+
+data class BookmarkSnapshot(
+    val bookmarks: List<Bookmark>,
+    val bookmarksById: Map<Long, Bookmark>,
+    val nextId: Long
+)

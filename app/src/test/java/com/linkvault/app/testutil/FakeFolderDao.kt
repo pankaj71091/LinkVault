@@ -30,6 +30,23 @@ class FakeFolderDao : FolderDao {
         foldersState.value = emptyList()
     }
 
+    /** Returns a value-typed snapshot the [FakeBackupDatabase] can restore
+     *  on a rolled-back transaction. */
+    fun snapshotState(): FolderSnapshot = FolderSnapshot(
+        folders = folders.toList(),
+        foldersById = foldersById.toMap(),
+        nextId = nextId
+    )
+
+    fun restore(snap: FolderSnapshot) {
+        folders.clear()
+        folders.addAll(snap.folders)
+        foldersById.clear()
+        foldersById.putAll(snap.foldersById)
+        nextId = snap.nextId
+        foldersState.value = folders.toList()
+    }
+
     // --- Methods used by BackupRepository ---
 
     override suspend fun insert(folder: Folder): Long {
@@ -83,3 +100,9 @@ class FakeFolderDao : FolderDao {
     override fun getFoldersByParent(parentId: Long): Flow<List<Folder>> =
         foldersState.map { list -> list.filter { it.parentFolderId == parentId } }
 }
+
+data class FolderSnapshot(
+    val folders: List<Folder>,
+    val foldersById: Map<Long, Folder>,
+    val nextId: Long
+)

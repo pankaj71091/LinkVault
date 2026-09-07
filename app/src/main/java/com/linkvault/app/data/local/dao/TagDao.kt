@@ -23,6 +23,15 @@ interface TagDao {
     @Delete
     suspend fun delete(tag: Tag)
 
+    /**
+     * Used by REPLACE-mode import (after bookmarks are deleted, the
+     * cross-ref table is empty, so every tag is an orphan). Not
+     * surfaced in the UI; the regular delete-tag flow is per-tag and
+     * goes through [delete] with CASCADE behavior.
+     */
+    @Query("DELETE FROM tags")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM tags ORDER BY name COLLATE NOCASE ASC")
     fun getAllTags(): Flow<List<Tag>>
 
