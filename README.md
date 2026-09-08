@@ -6,10 +6,10 @@
 
 <p align="center">
   <a href="https://github.com/pankaj71091/LinkVault/releases/latest">
-    <img src="https://img.shields.io/github/v/release/pankaj71091/LinkVault?label=Download%20APK&style=for-the-badge&color=orange" alt="Download APK">
+    <img src="badge.png" width="180" alt="Download on GitHub">
   </a>
   <a href="https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://app/%7B%22id%22%3A%20%22com.linkvault.app%22%2C%20%22url%22%3A%20%22https%3A//github.com/pankaj71091/LinkVault%22%2C%20%22author%22%3A%20%22pankaj71091%22%2C%20%22name%22%3A%20%22LinkVault%22%2C%20%22preferredApkIndex%22%3A%200%2C%20%22additionalSettings%22%3A%20%22%7B%5C%22includePrereleases%5C%22%3A%20true%2C%20%5C%22fallbackToOlderReleases%5C%22%3A%20true%2C%20%5C%22filterReleaseTitlesByRegEx%5C%22%3A%20%5C%22%5C%22%2C%20%5C%22filterReleaseNotesByRegEx%5C%22%3A%20%5C%22%5C%22%2C%20%5C%22verifyLatestTag%5C%22%3A%20false%2C%20%5C%22dontSortReleasesList%5C%22%3A%20false%2C%20%5C%22useLatestAssetDateAsReleaseDate%5C%22%3A%20false%2C%20%5C%22trackOnly%5C%22%3A%20false%2C%20%5C%22versionExtractionRegEx%5C%22%3A%20%5C%22%5C%22%2C%20%5C%22matchGroupToUse%5C%22%3A%20%5C%22%5C%22%2C%20%5C%22versionDetection%5C%22%3A%20false%2C%20%5C%22releaseDateAsVersion%5C%22%3A%20false%2C%20%5C%22useVersionCodeAsOSVersion%5C%22%3A%20false%2C%20%5C%22apkFilterRegEx%5C%22%3A%20%5C%22%5C%22%2C%20%5C%22invertAPKFilter%5C%22%3A%20false%2C%20%5C%22autoApkFilterByArch%5C%22%3A%20true%2C%20%5C%22appName%5C%22%3A%20%5C%22%5C%22%2C%20%5C%22shizukuPretendToBeGooglePlay%5C%22%3A%20false%2C%20%5C%22exemptFromBackgroundUpdates%5C%22%3A%20false%2C%20%5C%22skipUpdateNotifications%5C%22%3A%20false%2C%20%5C%22about%5C%22%3A%20%5C%22Privacy-focused%2C%20local-only%20Android%20bookmark%20manager.%5C%22%7D%22%7D">
-    <img src="https://raw.githubusercontent.com/ImranRk/Obtainium/main/assets/obtainium-badge.png" width="150" alt="Get it on Obtainium">
+    <img src="https://raw.githubusercontent.com/ImranRk/Obtainium/main/assets/obtainium-badge.png" width="180" alt="Get it on Obtainium">
   </a>
 </p>
 
