@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="app_icon.png" width="128" height="128" alt="LinkVault Logo">
+  <img src="logo.png" width="96" height="96" alt="LinkVault Logo">
 </p>
 
-<h1 align="center">LinkVault 🔒</h1>
+<h1 align="center">LinkVault</h1>
 
 <p align="center">
   <a href="https://github.com/YOUR_USERNAME/LinkVault/releases/latest">
