@@ -13,8 +13,8 @@ android {
         applicationId = "com.linkvault.app"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1" // Initial Public Release
+        versionCode = 2
+        versionName = "0.2.0" // Jetpack DataStore & Transactional Integrity Update
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

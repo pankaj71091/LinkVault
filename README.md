@@ -1,8 +1,21 @@
-# LinkVault 🔒
+<p align="center">
+  <img src="app_icon.png" width="128" height="128" alt="LinkVault Logo">
+</p>
+
+<h1 align="center">LinkVault 🔒</h1>
+
+<p align="center">
+  <a href="https://github.com/YOUR_USERNAME/LinkVault/releases/latest">
+    <img src="https://img.shields.io/github/v/release/YOUR_USERNAME/LinkVault?label=Download%20APK&style=for-the-badge&color=orange" alt="Download APK">
+  </a>
+  <a href="https://github.com/ImranRk/Obtainium">
+    <img src="https://raw.githubusercontent.com/ImranRk/Obtainium/main/assets/obtainium-badge.png" width="150" alt="Get it on Obtainium">
+  </a>
+</p>
 
 **LinkVault** is a privacy-focused, local-only Android bookmark manager. It isn't a browser; instead, it serves as a secure vault for links you share from other apps or browsers. 
 
-Designed for users who want to organize their digital life without cloud tracking, accounts, or data mining. Your data never leaves your device.
+Designed for users who want to organize their digital life without cloud tracking, accounts, or data mining. **Your data never leaves your device.**
 
 ---
 
@@ -10,7 +23,7 @@ Designed for users who want to organize their digital life without cloud trackin
 
 ### 🚀 Seamless Capture
 - **Universal Share Target**: Capture links instantly from any app using the standard Android Share sheet.
-*   **Quick-Save Bottom Sheet**: A powerful, Material 3 bottom-sheet that allows you to browse your folder hierarchy and create new folders without leaving your current app.
+- **Quick-Save Bottom Sheet**: A powerful, Material 3 bottom-sheet that allows you to browse your folder hierarchy and create new folders without leaving your current app.
 - **Smart Metadata**: Automatically fetches page titles and favicons in the background using WorkManager.
 - **Duplicate Detection**: Alerts you if a URL is already in your vault to keep your library clean.
 - **Folder Suggestions**: Suggests the most likely folder based on your saving habits for specific domains.
@@ -24,27 +37,21 @@ Designed for users who want to organize their digital life without cloud trackin
 - **Full-Text Search**: Instant search across titles, URLs, and your personal notes.
 
 ### 🛠 Power User Tools
-- **Multi-Select Bulk Actions**: Long-press to select multiple links and Archive, Delete, Tag, or Move them in one go.
+- **Transactional Imports**: Robust JSON and HTML imports wrapped in database transactions to ensure data integrity.
 - **Browser Import**: Import your existing library from Chrome, Firefox, or Safari using standard Netscape HTML files.
 - **Portable Backups**: Export and Import your entire vault via JSON for easy migration or safe-keeping.
+- **Backup Reminders**: Automatic notifications to ensure your data is backed up regularly.
 
 ---
 
-## 🛡 Privacy First
+## 🛡 Privacy & Architecture
 - **No Cloud**: No sync servers, no accounts, and no data collection.
 - **Local Storage**: All data is stored in a private SQLite database on your device.
-- **Open Source**: Transparent code that you can audit and build yourself.
-
----
-
-## 🛠 Tech Stack
-- **Language**: 100% Kotlin
-- **UI**: Jetpack Compose (Material 3)
-- **Database**: Room (with Migrations)
-- **Background Tasks**: WorkManager
-- **Image Loading**: Coil 3
-- **Serialization**: Kotlinx Serialization
-- **Architecture**: MVVM with Repository pattern
+- **Modern Tech Stack**:
+    - **Jetpack DataStore**: Asynchronous, non-blocking preference storage.
+    - **Room Database**: Type-safe local database with transactional integrity.
+    - **Jetpack Compose**: Modern, reactive UI built with Material 3.
+- **Test-Driven Design**: Decoupled architecture using interfaces for easy unit testing.
 
 ---
 
@@ -70,8 +77,6 @@ Designed for users who want to organize their digital life without cloud trackin
 - [ ] **Dead-Link Checker**: Automatically flag 404s or expired links.
 - [ ] **Database Encryption**: At-rest encryption using SQLCipher / Jetpack Security.
 - [ ] **Encrypted Backups**: Password-protected export containers.
-- [ ] **Home Screen Widgets**: Quick access to pinned links.
-- [ ] **Quick Settings Tile**: Save from clipboard in one tap.
 
 ---
 
