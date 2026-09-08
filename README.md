@@ -6,8 +6,8 @@
 
 <p align="center">
   <a href="https://github.com/pankaj71091/LinkVault/releases/latest">
-    <img src="https://img.shields.io/badge/DOWNLOAD%20ON-GitHub-18171c?style=for-the-badge&logo=github&logoColor=white" height="40" alt="Download on GitHub">
-  </a>
+  <img src="https://img.shields.io/badge/DOWNLOAD%20ON-GitHub-18171c?style=for-the-badge&logo=github&logoColor=white" height="40" alt="Download on GitHub">
+</a>
   <a href="https://apps.obtainium.imranr.dev/redirect.html?r=obtainium%3A%2F%2Fapp%2F%7B%22id%22%3A%22com.linkvault.app%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fpankaj71091%2FLinkVault%22%2C%22author%22%3A%22pankaj71091%22%2C%22name%22%3A%22LinkVault%22%2C%22preferredApkIndex%22%3A0%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%2C%5C%22fallbackToOlderReleases%5C%22%3Atrue%2C%5C%22autoApkFilterByArch%5C%22%3Atrue%2C%5C%22about%5C%22%3A%5C%22Privacy-focused%2C%20local-only%20Android%20bookmark%20manager.%5C%22%7D%22%7D">
     <img src="badge_obtainium.png" height="40" alt="Get it on Obtainium">
   </a>
