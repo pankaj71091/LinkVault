@@ -5,8 +5,8 @@
 <h1 align="center">LinkVault</h1>
 
 <p align="center">
-  <a href="https://github.com/YOUR_USERNAME/LinkVault/releases/latest">
-    <img src="https://img.shields.io/github/v/release/YOUR_USERNAME/LinkVault?label=Download%20APK&style=for-the-badge&color=orange" alt="Download APK">
+  <a href="https://github.com/pankaj71091/LinkVault/releases/latest">
+    <img src="https://img.shields.io/github/v/release/pankaj71091/LinkVault?label=Download%20APK&style=for-the-badge&color=orange" alt="Download APK">
   </a>
   <a href="https://github.com/ImranRk/Obtainium">
     <img src="https://raw.githubusercontent.com/ImranRk/Obtainium/main/assets/obtainium-badge.png" width="150" alt="Get it on Obtainium">
@@ -64,7 +64,7 @@ Designed for users who want to organize their digital life without cloud trackin
 ### Building
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/LinkVault.git
+   git clone https://github.com/pankaj71091/LinkVault.git
    ```
 2. Open the project in Android Studio.
 3. Let Gradle sync complete.
