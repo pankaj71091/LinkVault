@@ -1,25 +1,11 @@
 <p align="center">
-  <img src="logo.png" width="96" height="96" alt="LinkVault">
-</p>
-
-<h1 align="center">LinkVault</h1>
-
-<p align="center">
-  Privacy-focused, local-only Android bookmark manager.
-</p>
-
-<p align="center">
   <a href="https://github.com/pankaj71091/LinkVault/releases/latest">
-    <img src="badge_github.png" height="38" alt="Download on GitHub">
+    <img src="badge_github.png" width="160" height="40" alt="Download on GitHub">
   </a>
   &nbsp;&nbsp;
-  <a href="YOUR_OBTAINIUM_URL">
-    <img src="badge_obtainium.png" height="38" alt="Get it on Obtainium">
+  <a href="https://apps.obtainium.imranr.dev/redirect.html?r=obtainium%3A%2F%2Fapp%2F%7B%22id%22%3A%22com.linkvault.app%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fpankaj71091%2FLinkVault%22%2C%22author%22%3A%22pankaj71091%22%2C%22name%22%3A%22LinkVault%22%2C%22preferredApkIndex%22%3A0%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%2C%5C%22fallbackToOlderReleases%22%3Atrue%2C%5C%22autoApkFilterByArch%22%3Atrue%2C%5C%22about%22%3A%22Privacy-focused%2C%20local-only%20Android%20bookmark%20manager.%22%7D%22%7D">
+    <img src="badge_obtainium.png" width="160" height="40" alt="Get it on Obtainium">
   </a>
-</p>
-
-<p align="center">
-  <sub>No account · No cloud · No tracking · Your data stays on your device</sub>
 </p>
 
 **LinkVault** is a privacy-focused, local-only Android bookmark manager. It isn't a browser; instead, it serves as a secure vault for links you share from other apps or browsers.
